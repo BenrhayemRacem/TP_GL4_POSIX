@@ -3,72 +3,72 @@
 #include <pthread.h>
 #include<unistd.h>
 
-pthread_mutex_t vAB, vBC, vCD, vEB, vFA;
-void *departedFromA(void *arg) {
+pthread_mutex_t segmentAB, segmentBC, segmentCD, segmentEB, segmentFA;
+void *departDeA(void *arg) {
     int i = *(int *) (arg);
-    pthread_mutex_lock(&vAB);
-    printf("segment AB occupied by train %d\n", i);
+    pthread_mutex_lock(&segmentAB);
+    printf("segment AB occupe par le train  %d\n", i);
     usleep(1000000);
-    printf("Train %d is leaving segment AB\n", i);
-    pthread_mutex_unlock(&vAB);
-    pthread_mutex_lock(&vBC);
-    printf("segment BC occupied by train %d\n", i);
+    printf("Train %d quitte le segment AB\n", i);
+    pthread_mutex_unlock(&segmentAB);
+    pthread_mutex_lock(&segmentBC);
+    printf("segment BC occupe par le train  %d\n", i);
     usleep(1000000);
-    printf("Train %d is leaving segment BC\n", i);
-    pthread_mutex_unlock(&vBC);
-    pthread_mutex_lock(&vCD);
-    printf("segment CD occupied by train %d\n", i);
+    printf("Train %d quitte le segment BC\n", i);
+    pthread_mutex_unlock(&segmentBC);
+    pthread_mutex_lock(&segmentCD);
+    printf("segment CD occupe par le train  %d\n", i);
     usleep(1000000);
-    printf("Train %d is leaving segment CD\n", i);
-    pthread_mutex_unlock(&vCD);
+    printf("Train %d quitte le segment CD\n", i);
+    pthread_mutex_unlock(&segmentCD);
 }
 
-void *departedFromF(void *arg) {
+void *departDeF(void *arg) {
     int i = *(int *) (arg);
-    pthread_mutex_lock(&vFA);
-    printf("segment FA occupied by train %d\n", i);
+    pthread_mutex_lock(&segmentFA);
+    printf("segment FA occupe par le train %d\n", i);
     usleep(1000000);
-    printf("Train %d is leaving segment FA\n", i);
-    pthread_mutex_unlock(&vFA);
-    departedFromA(arg);
+    printf("Train %d quitte le segment FA\n", i);
+    pthread_mutex_unlock(&segmentFA);
+    departDeA(arg);
 }
 
-void *departedFromE(void *arg) {
+void *departDeE(void *arg) {
     int i = *(int *) (arg);
-    pthread_mutex_lock(&vEB);
-    printf("segment EB occupied by train %d\n", i);
+    pthread_mutex_lock(&segmentEB);
+    printf("segment EB occupe par le train  %d\n", i);
     usleep(1000000);
-    printf("Train %d is leaving segment EB\n", i);
-    pthread_mutex_unlock(&vEB);
-    pthread_mutex_lock(&vBC);
-    printf("segment BC occupied by train %d\n", i);
+    printf("Train %d quitte le segment EB\n", i);
+    pthread_mutex_unlock(&segmentEB);
+    pthread_mutex_lock(&segmentBC);
+    printf("segment BC occupe par le train  %d\n", i);
     usleep(1000000);
-    printf("Train %d is leaving segment BC\n", i);
-    pthread_mutex_unlock(&vBC);
-    pthread_mutex_lock(&vCD);
-    printf("segment CD occupied by train %d\n", i);
+    printf("Train %d quitte le segment BC\n", i);
+    pthread_mutex_unlock(&segmentBC);
+    pthread_mutex_lock(&segmentCD);
+    printf("segment CD occupe par le train  %d\n", i);
     usleep(1000000);
-    printf("Train %d is leaving segment CD\n", i);
-    pthread_mutex_unlock(&vCD);
+    printf("Train %d quitte le segment CD\n", i);
+    pthread_mutex_unlock(&segmentCD);
 }
 
 int main() {
     pthread_t train[5];
-    pthread_mutex_init(&vAB, NULL);
-    pthread_mutex_init(&vBC, NULL);
-    pthread_mutex_init(&vCD, NULL);
-    pthread_mutex_init(&vEB, NULL);
-    pthread_mutex_init(&vFA, NULL);
+    pthread_mutex_init(&segmentAB, NULL);
+    pthread_mutex_init(&segmentBC, NULL);
+    pthread_mutex_init(&segmentCD, NULL);
+    pthread_mutex_init(&segmentEB, NULL);
+    pthread_mutex_init(&segmentFA, NULL);
     for(int i=0;i<5;i++){
-        int * id = malloc(sizeof(int));
+        int * id =  (int*) malloc(sizeof(int));
         *id = i+1;
         if(i%3==0)
-            pthread_create(&train[i], NULL, departedFromA, id);
+            pthread_create(&train[i], NULL, departDeA, id);
 
         else if(i%3==1)
-            pthread_create(&train[i], NULL, departedFromF,id);
+            pthread_create(&train[i], NULL, departDeF,id);
         else
-            pthread_create(&train[i], NULL, departedFromE, id);
+            pthread_create(&train[i], NULL, departDeE, id);
     }
     for(int i=0;i<5;i++){
         pthread_join(train[i],NULL);
